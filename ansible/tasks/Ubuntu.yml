@@ -1,0 +1,24 @@
+- name: Add repos
+  apt_repository: 
+    repo: "{{ item }}" 
+    state: present
+  with_items: "{{ apt_repos }}"
+  become: true
+#- name: Add keys
+#  apt_key:
+#  url: "{{ item }}"
+#  state: present
+#with_items: "{{ apt_keys }}"
+#become: true
+- name: Ensure apt is updated
+  apt:
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+- name: Set default shell to zsh
+  user:
+    shell: /usr/bin/zsh
+    name: "{{ ansible_env.USER }}"
+    # command: "chsh -s $(which zsh)"
+  become: true
