@@ -71,4 +71,6 @@ Setup via ansible 🤖 Requires `2.5.0+`
 - [] Create GitHub action to test whether playbook completes successfully
 - [] Interactive configuration?
 - [] WSL support
-
+- [] Update README with customization instructions
+- [] Implement desktop environment configuration
+- [] Add hosts for all my PCs + cloud infra
