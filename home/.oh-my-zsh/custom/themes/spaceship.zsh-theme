@@ -1,1 +1,0 @@
-/Users/ibalce/.oh-my-zsh/themes/spaceship-prompt/spaceship.zsh-theme
