@@ -1,0 +1,37 @@
+asdf_dir: "${HOME}/.asdf"
+
+asdf_plugins_languages:
+  - dart
+  - go
+  - java
+  - kotlin
+  - nodejs
+  - python
+  - ruby
+  - rust
+  - shellcheck
+  - yarn
+  
+asdf_plugins_tools:
+  - bitwarden
+  - direnv
+  - fd
+  - firebase
+  - flutter
+  - fzf
+  - gcloud
+  - github-cli
+  - gradle
+  - helm
+  - hub
+  - kubectl
+  - maven
+  - meson
+  - minikube
+  - mysql
+  - neovim
+  - ripgrep
+  - shellcheck
+  - tmux
+  - vault
+  - vim

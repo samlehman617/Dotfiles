@@ -1,8 +1,28 @@
 - name: Clone asdf repo
   git:
     repo=https://github.com/asdf-vm/asdf.git
-    dest='{{ home_dir }}/.asdf'
+    dest="{{ asdf_dir }}"
   register: clone_asdf
 
-# - name: Install plugins
-#   command: 'asdf plugin add {{ }}'
+- name: Add language plugins
+  command: "{{ asdf_dir }}/bin/asdf plugin add {{ item }}"
+  loop: "{{ asdf_plugins_languages }}
+
+- name: Add tool plugins
+  command: "{{ asdf_dir }}/bin/asdf plugin add {{ item }}"
+  loop: "{{ asdf_plugins_tools }}
+
+# - name: Import nodejs release OpenPGP keys into keyring
+#   command: "bash -c '${ASDF_DATA_DIR:=$HOME/.asdf}/plugins/nodejs/bin/import-previous-release-team-keyring'"
+
+- name: Disable nodejs OpenPGP signature checking
+  command: "export NODEJS_CHECK_SIGNATURES=no"
+
+- name: Install latest versions of language plugins
+  command: "{{ asdf_dir }}/bin/asdf install {{ item }} latest"
+  loop: "{{ asdf_plugins_languages }}
+
+- name: Install latest versions of tool plugins
+  command: "{{ asdf_dir }}/bin/asdf install {{ item }} latest"
+  loop: "{{ asdf_plugins_tools }}
+
