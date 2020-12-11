@@ -19,6 +19,9 @@ alias gitlc="git ls-files | xargs wc -l"
 alias gitarc="git archive HEAD | bzip2 | uuencode /dev/stdout"
 alias gitbun="git bundle create - HEAD | uuencode /dev/stdout"
 
+# neovim
+alias v=nvim
+
 # uue
 alias uecp="bzip2 | uuencode /dev/stdout"
 alias uedc="uudecode -o - | bunzip2 "
