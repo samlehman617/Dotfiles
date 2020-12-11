@@ -1,5 +1,6 @@
 extra_utils:
   - zsh-autosuggestions
+  - coreutils
 utils: "{{ common }} + {{ extra_utils }}"
 brew_casks:
   - flux

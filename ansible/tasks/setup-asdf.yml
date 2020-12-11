@@ -1,0 +1,8 @@
+- name: Clone asdf repo
+  git:
+    repo=https://github.com/asdf-vm/asdf.git
+    dest='{{ home_dir }}/.asdf'
+  register: clone_asdf
+
+# - name: Install plugins
+#   command: 'asdf plugin add {{ }}'

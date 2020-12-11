@@ -269,6 +269,11 @@ zinit as"program" make'!' atclone'./direnv hook zsh > zhook.zsh' \
     atpull'%atclone' pick"direnv" src"zhook.zsh" for \
         direnv/direnv
 
+# Use asdf to manage programming environments
+. $HOME/.asdf/asdf.sh
+# Append asdf completions to fpath
+fpath=(${ASDF_DIR}/completions $fpath)
+
 # +-----------------------------------------------------------------+
 # | ALIASES                                                         |
 # +-----------------------------------------------------------------+
