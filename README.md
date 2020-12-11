@@ -6,7 +6,7 @@ Setup via ansible 🤖 Requires `2.5.0+`
 ## Installation
 1. Clone this repo and run `make all` from inside the `dotfiles` directory
 	```
-    git clone git@github.com:ellaqezi/dotfiles.git
+    git clone https://github.com/samlehman617/dotfiles.git
     make -C dotfiles all
 	```
  
@@ -18,8 +18,8 @@ Setup via ansible 🤖 Requires `2.5.0+`
 
     ```
     [user]
-    	name = ellaqezi 
-    	email = ellaqezi@gmail.com
+    	name = samlehman617 
+    	email = samlehman617@gmail.com
     ```
 
 1. [OPTIONAL] Install `pip`, if not yet installed on the machine
@@ -49,18 +49,26 @@ Setup via ansible 🤖 Requires `2.5.0+`
 1. [Ansible | installation]
 1. [Ansible | tips n tricks]
 1. [Homebrew]
-1. [Oh my zsh]
-1. [Powerline fonts]
-1. [Spaceship prompt]
 1. [`ansible/ansible#51513`](https://github.com/ansible/ansible/issues/51513#issuecomment-459150769)
 1. [`ansible/ansible#54347`](https://github.com/ansible/ansible/pull/54347)
 
 [Ansible | installation]: http://docs.ansible.com/ansible/latest/intro_installation.html#latest-releases-via-pip
 [Ansible | tips n tricks]: https://ansible-tips-and-tricks.readthedocs.io/en/latest/os-dependent-tasks/variables/
 [Homebrew]: https://brew.sh/
-[Oh my zsh]: https://github.com/robbyrussell/oh-my-zsh
-[Powerline fonts]: https://github.com/powerline/fonts
 [setup playbook]: ./ansible/setup-dotfiles.yml
-[Spaceship prompt]: https://github.com/denysdovhan/spaceship-prompt
 [filetree]: https://docs.ansible.com/ansible/devel/plugins/lookup/filetree.html
 [zsh.png]: docs/zsh.png
+
+## To-Do
+- [] Fix asdf
+- [] Auto-install fonts & generate NERDFonts
+- [] Switch to ansible's default method of installing packages
+- [] Restructure directories to have task & vars for each major component
+- [] Install all my other software
+- [] Separate repos into dotfiles, ansible dotfile manager, scripts, secrets, etc.
+- [] Create roles for basic PC, development, media editing, and server hosts
+- [] Support flatpaks
+- [] Create GitHub action to test whether playbook completes successfully
+- [] Interactive configuration?
+- [] WSL support
+
