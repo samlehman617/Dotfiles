@@ -1,0 +1,36 @@
+user_font_dir: "{{ ansible_env.HOME }}/.local/share/fonts"
+all_fonts:
+  - "3270"
+  - "Cascadia Code"
+  - "Fira Code"
+  - "Hack"
+  - "Inconsolata"
+  - "Iosevka"
+  - "Meslo"
+  - "Noto"
+  - "Open Dyslexic"
+  - "Roboto"
+  - "Roboto Mono"
+  - "Source Code Pro"
+  - "Ubuntu"
+  - "Ubuntu Mono"
+
+terminal_fonts:
+  - fontname: '3270'
+  - fontname: 'AnonymousPro'
+  - fontname: 'Hack'
+  - fontname: 'Iosevka' 
+  - fontname: 'Meslo'
+  - fontname: 'Mononoki'
+  - fontname: 'Noto'
+  - fontname: 'Open Dyslexic'
+  - fontname: 'Roboto Mono'
+  - fontname: 'SourceCodePro'
+  - fontname: 'Space Mono'
+  - fontname: 'Terminus'
+  - fontname: 'Ubuntu'
+  - fontname: 'Ubuntu Mono'
+#   - fontname: 'Cascadia Code'
+#   - fontname: 'Fira'
+#   - fontname: 'Fira Code'
+#   - fontname: 'IBM Plex Mono'

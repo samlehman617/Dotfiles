@@ -4,6 +4,7 @@
     dotfiles_dir: "{{ playbook_dir }}/.."
     modules_dir: '/etc/ansible/modules'
     common:
+      - software-properties-common
       - bash-completion
       - docker
       - git
@@ -33,6 +34,14 @@
   - include_vars: "{{ os_vars }}"
     when: vars_exist
 
+  - include_vars: "vars/fonts.yml"
+
+  - name: Install NerdFonts
+    include_role:
+      name: drew-kun.nerdfonts
+    vars:
+      nerdfonts_fonts: "{{ terminal_fonts }}"
+
   - include_tasks: "tasks/setup-zsh.yml"
 
   - name: Symlink config files
@@ -48,5 +57,6 @@
     action: >
       {{ ansible_pkg_mgr }} name="{{ utils }}" state=latest
     become: "{{ false if ansible_pkg_mgr == 'homebrew' else true }}"
+
   - include_tasks: "{{ os_tasks }}"
     when: tasks_exist
