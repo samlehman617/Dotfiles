@@ -31,3 +31,28 @@ alias pag="ps aux | grep"
 
 alias serve="python -m SimpleHTTPServer"
 alias genpw='genpw() {  LC_ALL=C tr -dc "A-Za-z0-9!#$%&)(*+,-./:;<=>?@[\]^_\`{|}~" < /dev/urandom | head -c ${1:-12} | pbcopy ;}; genpw'
+
+# Quick edit common files
+alias zshrc="${EDITOR:-vim} $HOME/.zshrc"
+alias vimrc="${EDITOR:-vim} $HOME/.vimrc"
+alias aliases="${EDITOR:-vim} $HOME/.aliases"
+
+# Quick navigate common directories
+alias cdcache="cd ${XDG_CACHE_HOME:-$HOME/.cache}"
+alias cdconf="cd ${XDG_CONFIG_HOME:-$HOME/.config}"
+alias cddata="cd ${XDG_DATA_HOME:-$HOME/.local/share}"
+alias cdruntime="cd ${XDG_RUNTIME_DIR:-/run/user/1000}"
+
+alias cddesk="cd ${XDG_DESKTOP_HOME:-$HOME/Desktop}"
+alias cddoc="cd ${XDG_DOCUMENTS_DIR:-$HOME/Documents}"
+alias cddl="cd ${XDG_DOWNLOAD_DIR:-$HOME/Downloads}"
+alias cdmusic="cd ${XDG_MUSIC_DIR:-$HOME/Music}"
+alias cdpics="cd ${XDG_PICTURES_DIR:-$HOME/Pictures}"
+alias cdpublic="cd ${XDG_PUBLICSHARE_DIR:-$HOME/Public}"
+alias cdvids="cd ${XDG_VIDEOS_DIR:-$HOME/Videos}"
+alias cdtempl="cd ${XDG_TEMPLATES_DIR:-$HOME/Templates}"
+
+alias cdcode="cd ${PROJECTS_DIR:-$HOME/Code}"
+alias cddf="cd ${DOTFILES_DIR:-$HOME/dotfiles}"
+
+# TODO: Quick ls common directories
