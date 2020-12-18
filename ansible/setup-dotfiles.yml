@@ -8,6 +8,7 @@
       - bash-completion
       - docker
       - git
+      - subversion
       - gpg
       - python3
       - tree
