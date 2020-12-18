@@ -1,4 +1,13 @@
 # +-----------------------------------------------------------------+
+# |                           ZSHRC                                 |
+# +-----------------------------------------------------------------+
+# | About:                                                          |
+# |                                                                 |
+# | Plugin Manager:                                                 |
+# | - Zinit (https://github.com/zdharma/zinit)                      |
+# +-----------------------------------------------------------------+
+#
+# +-----------------------------------------------------------------+
 # | Variables                                                       |
 # +-----------------------------------------------------------------+
 CACHE=${XDG_CACHE_HOME:-$HOME/.cache}
@@ -24,7 +33,7 @@ CACHE=${XDG_CACHE_HOME:-$HOME/.cache}
 # | - mv"file1 -> file2": Moves a file.                             |
 # | - atclone:            Runs command on repo clone.               |
 # | - atpull:             Runs command on repo pull.                |
-# | - atinit:             Runs command before loading.              |
+# | - atinit:             Runs command after cloning & before loading. |
 # | - atload:             Runs command after zsh load.              |
 # | - blockf:             Block normal completion adding.           |
 # | - wait:               Postpone loading until zshrc loaded.      |
@@ -36,37 +45,228 @@ CACHE=${XDG_CACHE_HOME:-$HOME/.cache}
 # |    > autoload -Uz _zinit                                        |
 # |    > (( ${+_comps} )) && _comps[zinit]=_zinit                   |
 # +-----------------------------------------------------------------+
-source ~/.zinit/bin/zinit.zsh
 
 # +-----------------------------------------------------------------+
-# | Meta Plugins                                                    |
+# | Powerlevel10k: Instant Prompt                                   |
 # +-----------------------------------------------------------------+
-# | Installs groups of plugins. Supports Turbo Mode.                |
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+#   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# fi
+
 # +-----------------------------------------------------------------+
-# | annexes+con:   unscope, as-monitor, patch-dl, rust, submods,    |
-# |                bin-gem-node                                     |
-# | console-tools: dircolors-material, exa, ripgrep, tig,           |
-# |                sharkdp/(fd, bat, hexyl, hyperfine, vivid)       |
-# | developer:     github-issues, github-issues-srv, gitignore, tig |
-# |                molovo/(color, revolver, zunit)                  |
-# | ext-git:       git-open, git-recall, git-recent, git-extras,    |
-# |                git-my, git-now, git-quick-stats, forgit         |
-# | prezto:        archive, directory, utility                      |
-# | rust-utils:    rust-toolchain, cargo-extensions                 |
-# | zsh-users:     fast-syntax-highlighting, zsh-autosuggestions,   |
-# |                zsg-completions                                  |
+# | Zinit                                                           |
 # +-----------------------------------------------------------------+
+# Set Zinit variables
+ZINIT_HOME="${ZINIT_HOME:-${ZPLG_HOME:-${ZDOTDIR:-$HOME}/.zinit}}"
+ZINIT_BIN_DIR_NAME="${${ZINIT_BIN_DIR_NAME:-$ZPLG_BIN_DIR_NAME}:-bin}"
+
+# Check if Zinit exists & install zinit otherwise
+if [[ ! -f $ZINIT_HOME/$ZINIT_BIN_DIR_NAME/zinit.zsh ]]; then
+  print -P "%F{33}▓▒░ %F{220}Installing DHARMA Initiative Plugin Manager (zdharma/zinit)…%f"
+    command mkdir -p "$ZINIT_HOME" && command chmod g-rwX "$ZINIT_HOME"
+    command git clone https://github.com/zdharma/zinit "$ZINIT_HOME/$ZINIT_BIN_DIR_NAME" && \
+        print -P "%F{33}▓▒░ %F{34}Installation successful.%f" || \
+        print -P "%F{160}▓▒░ The clone has failed.%f"
+fi
+# Load Zinit
+source "$ZINIT_HOME/$ZINIT_BIN_DIR_NAME/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
+
+# +-----------------------------------------------------------------+
+# | Async Shell                                                     |
+# +-----------------------------------------------------------------+
+zinit depth'1' lucid light-mode for \
+  pick'async.zsh' \
+    mafredri/zsh-async
+
+# +-----------------------------------------------------------------+
+# | Initial Prompt
+# | - Powerlevel10k
+# +-----------------------------------------------------------------+
+if [[ ! -f ~/.p10k.zsh ]]; then
+  zinit ice wait'!' lucid atload'true; _p9k_precmd' nocd
+else
+  zinit ice lucid atload'source ~/.p10k.zsh; _p9k_precmd' nocd
+fi
+zinit light romkatv/powerlevel10k
+
+# +---------------------------------------------------------------------------+
+# | Meta Plugins (https://github.com/zinit-zsh/z-a-meta-plugins)              |
+# | - Installs other meta-plugins                                             |
+# | - Installs groups of plugins                                              |
+# | - Installs zinit packages                                                 |
+# | - Installs binary packages                                                |
+# | - Supports zinit Turbo Mode                                               |
+# +---------------+-----------------------------------------------------------+
+# |       annexes | zinit-zsh/z-a-unscope,  zinit-zsh/z-a-as-monitor,         |
+# |               | zinit-zsh/z-a-patch-dl, zinit-zsh/z-a-rust,               |
+# |               | zinit-zsh/z-a-submods,  zinit-zsh/z-a-bin-gem-node        |
+# +---------------+-----------------------------------------------------------+
+# |   annexes+con | annexes (meta-plugin),  zsh-init/zinit-console            | 
+# +---------------+-----------------------------------------------------------+
+# | console-tools | dircolors-material (package), sharkdp (meta-plugin),      |
+# |               | ogham/exa, BurntSushi/ripgrep, jonas/tig                  |
+# +---------------+-----------------------------------------------------------+
+# |     developer | github-issues (package), github-issues-srv (package),     |
+# |               | molovo (meta-plugin), voronkovich/gitignore, jonas/tig    |
+# +---------------+-----------------------------------------------------------+
+# |         fuzzy | fzy (package), fzf (package), lotabout/skim, peco/peco    |
+# +---------------+-----------------------------------------------------------+
+# |     fuzzy-src | fzy (package), fzf-go, skim-cargo, peco-go                |
+# +---------------+-----------------------------------------------------------+
+# |       ext-git | Fakerr/git-recall,      davidosomething/git-my,           |
+# |               | paulirish/git-open,     arzzen/git-quick-stats,           |
+# |               | paulirish/git-recent,   wfxr/forgit,                      |
+# |               | iwata/git-now,          tj/git-extras                     |
+# +---------------+-----------------------------------------------------------+
+# |        molovo | molovo/color,       molovo/revolver,  molovo/zunit        |
+# +---------------+-----------------------------------------------------------+
+# |        prezto | PZTM::archive,      PZTM::directory,  PZTM::utility       |
+# +---------------+-----------------------------------------------------------+
+# |       sharkdp | sharkdp/fd,         sharkdp/bat,      sharkdp/hexyl,      |
+# |               | sharkdp/hyperfine,  sharkdp/vivid                         |
+# +---------------+-----------------------------------------------------------+
+# |    rust-utils | rust-toolchain,     cargo-extensions                      |
+# +---------------+-----------------------------------------------------------+
+# |       zdharma | zdharma/fast-syntax-highlighting,                         |
+# |               | zdharma/history-search-multi-word,                        |
+# |               | zdharma/zsh-diff-so-fancy                                 |
+# +---------------+-----------------------------------------------------------+
+# |      zdharma2 | zdharma/zconvey,    zdharma/zui,      zdharma/zflai       |
+# +---------------+-----------------------------------------------------------+
+# |     zsh-users | zsh-users/zsh-syntax-highlighting,                        |
+# |               | zsh-users/zsh-autosuggestions,                            |
+# |               | zsh-users/zsh-completions                                 |
+# +---------------+-----------------------------------------------------------+
+# | zsh-users+fast| zdharma/fast-syntax-highlighting,                         |
+# |               | zsh-users/zsh-autosuggestions,                            |
+# |               | zsh-users/zsh-completions                                 |
+# +---------------+-----------------------------------------------------------+
 # Add the meta-plugins plugin
 zinit for zinit-zsh/z-a-meta-plugins
-# Install the meta-plugins
-zinit for annexes+con \
+# Load the zinit extensions (annexes)
+zinit for \
+  annexes+con \
   console-tools \
   developer \
   ext-git \
   fuzzy \
   prezto \
   rust-utils \
+  sharkdp \
+  zdharma \
+  zdharma2 \
   zsh-users+fast
+
+
+# +-----------------------------------------------------------------+
+# | History                                                         |
+# +-----------------------------------------------------------------+
+# Set history file & load Oh-My-Zsh's history library
+zinit depth'3' lucid atinit'HISTFILE="${HOME}/.histfile"' for \
+  OMZL::history.zsh
+
+HISTSIZE=10000                   # Big history
+SAVEHIST=${HISTSIZE:-5000}       # Save more entries to history
+setopt HistIgnoreAllDups         # Ignore duplicate history entries
+setopt HistReduceBlanks          # Remove whitespace from history lines
+setopt IncAppendHistory          # Save history entries incrementally
+setopt ShareHistory              # Share history between shell instances
+
+# +-----------------------------------------------------------------+
+# | Trigger loading                                                 |
+# +-----------------------------------------------------------------+
+
+# Extract Files
+  # trigger-load'!x' \
+  #   OMZ::plugins/extract/extract.plugin.zsh \
+
+# Git: Update repos and show changes
+# zinit depth'3' lucid light-mode for \
+#   trigger-load'!updatelocal' blockf \
+#     nicholas85/updatelocal
+
+  # trigger-load'!man' \
+  #   ael-code/zsh-colored-man-pages \
+  # trigger-load'!gencomp' pick'zsh-completion-generator.plugin.zsh' blockf \
+  # atload'alias gencomp="zinit silent nocd as\"null\" wait\"2\" atlooad\"zinit creinstall -q _local/config-files; zicompinit\" for /dev/null; gencomp"' \
+  #   RobSis/zsh-completion-generator
+
+# +-----------------------------------------------------------------+
+# | Wait 0 Seconds                                                  |
+# +-----------------------------------------------------------------+
+# zinit depth'3' lucid wait'0' light-mode for \
+#   has'systemctl' \
+#     OMZP::systemd/systemd.plugin.zsh \
+#     OMZP::sudo/sudo.plugin.zsh
+
+  # if'false' ver'dev' \
+    # marlonrichert/zsh-autocomplete \
+  #   OMZL::completion.zsh \
+  # blockf \
+  #   zsh-users/zsh-completions \
+  # compile'{src/*.zsh,src/strategies/*}' pick'zsh-autosuggestions.zsh' \
+  # atload'_zsh_autosuggest_start' \
+  #   zsh-users/zsh-autosuggestions \
+  # pick'fz.sh' atload'ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(autopair-insert __fz_zsh_completion)' \  
+  #   changyuheng/fz
+
+# zinit depth'3' lucid wait'0' light-mode for \
+#   pick'autopair.zsh' nocompletions atload'bindkey "^H" backward-kill-word; ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(autopair-insert)' \
+#     hlissner/zsh-autopair
+
+  # pack'no-dir-color-swap' patch"$pchf/%PLUGIN%.patch" reset \
+  #   trapd00r/LS_COLORS \
+  # compile'{hsmw-*,test/*}' \
+  #   zdharma/history-search-multi-word \
+  #   OMZP::command-not-found/command-not-found.plugin.zsh \
+  # trackbinds bindmap'\e[1\;6D -> ^[[1\;5A' patch"$pchf/%PLUGIN%.patch" \
+  # reset pick'dircycle.zsh' \
+  #   michaelxmcbride/zsh-dircycle \
+  # autoload'#manydots-magic' \
+  #   knu/zsh-manydots-magic \
+  # pick'autoenv.zsh' nocompletions \
+  #   Tarrasch/zsh-autoenv \
+  # atinit'zicompinit_fast; zicdreplay' atload'FAST_HIGHLIGHT[chroma-man]=' \
+  #   zdharma/fast-syntax-highlighting \
+  # atload'bindkey "$terminfo[kcuu1]" history-substring-search-up;
+  # bindkey "$terminfo[kcud1]" history-substring-search-down' \
+  #   zsh-users/zsh-history-substring-search \
+  # as'completion' mv'*.zsh -> _git' \
+  #   felipec/git-completion \
+
+# zinit depth'3' lucid wait'0' light-mode from'gh-r' as'program' for \
+
+  # sbin from 'gh-r' submods'sei40kr/zsh-fast-alias-tips -> plugin' pick'plugin/*.zsh' \
+  # pack'bgn-binary' \
+  #   junegunn/fzf \
+  
+
+# zinit depth'3' lucid wait'0' light-mode binary for \
+  # sbin'bin/git-ignore' atload'export GI_TEMPLATE="$PWD/.git-ignore"; alias gi="git-ignore"'\
+  #   laggardkernel/git-ignore
+  # sbin'fd*/fd;fd*/fd -> fdfind' from'gh-r' \
+  #   @sharkdp/fd \
+
+# zinit depth'3' lucid wait'0' light-mode null for \
+  # sbin"bin/git-dsf;bin/diff-so-fancy" \
+  #   zdharma/zsh-diff-so-fancy \
+  # sbin \
+  #   paulirish/git-open \
+  # sbin'm*/micro' from"gh-r" ver'nightly' bpick'*linux64*' reset \
+  #   zyedidia/micro \
+  # sbin'*/rm-trash' atload'alias rm="rm-trash ${rm_opts}"' reset \
+  # patch"$pchf/%PLUGIN%.patch" \
+  #   nateshmbhat/rm-trash \
+  # sbin \
+  #   kazhala/dotbare \
+  # id-as'Cleanup' nocd atinit'_zsh_autosuggest_bind_widgets' \
+  #   zdharma/null
+
 
 # +-----------------------------------------------------------------+
 # | Curses-based plugin management interface                        |
@@ -88,14 +288,18 @@ zinit for annexes+con \
 # | - Exit search:                   Esc                            |
 # | - Delete whole word/line:        CTRL-W/K                       |
 # +-----------------------------------------------------------------+
-# zinit light zinit-zsh/z-a-patch-dl
-zinit ice id-as"zsh" atclone"./.preconfig
-        CFLAGS='-I/usr/include -I/usr/local/include -g -O2 -Wall' \
-        LDFLAGS='-L/usr/lib -L/usr/local/lib' ./configure --prefix='$ZPFX'" \
-    dl"https://gist.githubusercontent.com/psprint/2373494c71cb6d1529344a2ed1a64b03/raw -> curses.patch" \
-    patch'curses.patch' atpull"%atclone" reset \
-    run-atpull make"install" pick"/dev/null"
-zinit load zsh-users/zsh
+# Rebuilds Zsh w/ curses (requires zinit-zsh/z-a-patch-dl [installed via meta-plugin above])
+rebuild_zsh_curses_support() {
+  zinit ice id-as"zsh" atclone"./.preconfig
+          CFLAGS='-I/usr/include -I/usr/local/include -g -O2 -Wall' \
+          LDFLAGS='-L/usr/lib -L/usr/local/lib' ./configure --prefix='$ZPFX'" \
+      dl"https://gist.githubusercontent.com/psprint/2373494c71cb6d1529344a2ed1a64b03/raw -> curses.patch" \
+      patch'curses.patch' atpull"%atclone" reset \
+      run-atpull make"install" pick"/dev/null"
+  zinit load zsh-users/zsh
+}
+# Only rebuild Zsh if missing curses support
+# zmodload zsh/curses || rebuild_zsh_curses_support
 
 
 # +-----------------------------------------------------------------+
@@ -105,11 +309,11 @@ zinit load zsh-users/zsh
 # | Powerlevel10k configuration file.                               |
 # +-----------------------------------------------------------------+
 # Enable the plugin
-zinit ice depth=1; zinit light romkatv/powerlevel10k
+# zinit ice depth=1; zinit light romkatv/powerlevel10k
 # Enable the instant-prompt
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  # source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# fi
 
 # +-----------------------------------------------------------------+
 # | Colors                                                          |
@@ -117,33 +321,7 @@ fi
 # | Uses trapd00r/LS_COLORS for color definitions. This command     |
 # | prevents needing to re-evaluate dircolors at every shell startup|
 # +-----------------------------------------------------------------+
-# zinit pack for dircolors-material
-
-# Instead of eval "$(dircolors -b $HOME/LS_COLORS):
-# zinit ice atclone"dircolors -b LS_COLORS > clrs.zsh" \
-#     atpull'%atclone' pick"clrs.zsh" nocompile'!' \
-#     atload'zstyle ":completion:*" list-colors “${(s.:.)LS_COLORS}”'
-# zinit light trapd00r/LS_COLORS
-
-# if (( $+commands[vivid] )); then
-#   export VIVID_DATABASE=${XDG_CONFIG_HOME:-$HOME/.config}/vivid/config/filetypes.yml
-#   export LS_COLORS="$(vivid generate snazzy)"
-#   export ZLS_COLORS=$LS_COLORS
-#   export LESS="-R"
-#   export CLICOLOR=1
-#   export CLICOLOR_FORCE=1
-# fi
-
-
-# +-----------------------------------------------------------------+
-# | History                                                         |
-# +-----------------------------------------------------------------+
-HISTSIZE=10000                   # Big history
-SAVEHIST=${HISTSIZE:-5000}       # Save more entries to history
-setopt HistIgnoreAllDups         # Ignore duplicate history entries
-setopt HistReduceBlanks          # Remove whitespace from history lines
-setopt IncAppendHistory          # Save history entries incrementally
-setopt ShareHistory              # Share history between shell instances
+# zinit 
 
 # +-----------------------------------------------------------------+
 # | Keybindings                                                     |
@@ -267,14 +445,14 @@ bindkey -e
 # +-----------------------------------------------------------------+
 # | Uses direnv to modify environment on directory change.          |
 # +-----------------------------------------------------------------+
-zinit as"program" make'!' atclone'./direnv hook zsh > zhook.zsh' \
-    atpull'%atclone' pick"direnv" src"zhook.zsh" for \
-        direnv/direnv
+# zinit as"program" make'!' atclone'./direnv hook zsh > zhook.zsh' \
+#     atpull'%atclone' pick"direnv" src"zhook.zsh" for \
+#         direnv/direnv
 
 # Use asdf to manage programming environments
-. $HOME/.asdf/asdf.sh
+# . $HOME/.asdf/asdf.sh
 # Append asdf completions to fpath
-fpath=(${ASDF_DIR}/completions $fpath)
+# fpath=(${ASDF_DIR}/completions $fpath)
 
 # +-----------------------------------------------------------------+
 # | ALIASES                                                         |
@@ -286,14 +464,14 @@ fpath=(${ASDF_DIR}/completions $fpath)
 # |   folder.                                                       |
 # | - For a full list of active aliases, run `alias`.               |
 # +-----------------------------------------------------------------+
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
 if [[ -r "$HOME/.aliases" ]]; then
   source $HOME/.aliases
 fi
+zinit depth'3' lucid wait'0' light-mode from'gh-r' for \
+  sei40kr/fast-alias-tips-bin \
+  sei40kr/zsh-fast-alias-tips
 
 # +-----------------------------------------------------------------+
 # | Powerlevel10K Prompt Theme                                      |
 # +-----------------------------------------------------------------+
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# (( ! ${+functions[p10k]} )) || p10k finalize
