@@ -56,3 +56,4 @@ alias cdcode="cd ${PROJECTS_DIR:-$HOME/Code}"
 alias cddf="cd ${DOTFILES_DIR:-$HOME/dotfiles}"
 
 # TODO: Quick ls common directories
+alias tree="lsd --tree"
