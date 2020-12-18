@@ -56,7 +56,9 @@ source ~/.zinit/bin/zinit.zsh
 # | zsh-users:     fast-syntax-highlighting, zsh-autosuggestions,   |
 # |                zsg-completions                                  |
 # +-----------------------------------------------------------------+
-zinit for z-a-meta-plugins
+# Add the meta-plugins plugin
+zinit for zinit-zsh/z-a-meta-plugins
+# Install the meta-plugins
 zinit for annexes+con \
   console-tools \
   developer \
