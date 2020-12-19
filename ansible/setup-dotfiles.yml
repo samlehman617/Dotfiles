@@ -4,6 +4,9 @@
     dotfiles_dir: "{{ playbook_dir }}/.."
     modules_dir: '/etc/ansible/modules'
     common:
+      - libncurses5-dev
+      - libncursesw5-dev
+      - autoconf
       - software-properties-common
       - bash-completion
       - docker
