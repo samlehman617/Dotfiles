@@ -10,6 +10,11 @@
     force: yes
   become: true
 
+- name: Install ansible-galaxy collections
+  command: 'ansible-galaxy collection install {{ item }}'
+  with_items:
+    - community.general
+
 - name: Install ansible-galaxy roles
   command: 'ansible-galaxy install {{ item }}'
   with_items:
