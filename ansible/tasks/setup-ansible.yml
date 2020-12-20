@@ -1,5 +1,3 @@
-- include_vars: '../vars/ansible.yml'
-
 - name: Create ansible directory
   file: path={{ modules_dir }} state=directory
   become: true
@@ -14,4 +12,12 @@
 
 - name: Install ansible-galaxy roles
   command: 'ansible-galaxy install {{ item }}'
-  with_items: '{{ ansible_community_roles }}'
+  with_items:
+    - drew-kun.nerdfonts
+
+# Required by ansible jinja2 filter: 'community.general.json_query'
+# Used for filtering a variable of file data to just the paths
+# Currently using workaround instead
+# - name: Install dependencies for ansible features
+#   pip:
+#     name: jmespath
