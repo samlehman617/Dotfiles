@@ -25,6 +25,22 @@
     cache_valid_time: 3600
   become: true
 
+- name: Install Gnome Software
+  apt:
+    name:
+      - gnome-software
+      - gnome-software-plugin-snap
+      - gnome-software-plugin-flatpak
+    state: latest
+  when: ansible_distribution == "Ubuntu"
+
+- name: Remove Ubuntu Software
+  community.general.snap:
+    name:
+      - snap-store
+    state: absent
+  when: ansible_distribution == "Ubuntu"
+
 - name: Set default shell to zsh
   user:
     shell: /usr/bin/zsh
