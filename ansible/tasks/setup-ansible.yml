@@ -19,6 +19,7 @@
   command: 'ansible-galaxy install {{ item }}'
   with_items:
     - drew-kun.nerdfonts
+    - petermosmans.customize-gnome
 
 # Required by ansible jinja2 filter: 'community.general.json_query'
 # Used for filtering a variable of file data to just the paths
