@@ -1,0 +1,5 @@
+vim_deps:
+  - vim
+
+neovim_deps:
+  - neovim

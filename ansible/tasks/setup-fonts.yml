@@ -1,0 +1,10 @@
+- include_vars: '../vars/fonts.yml'
+
+- name: Install Nerdfonts
+  include_role: 
+    name: drew-kun.nerdfonts
+  vars: 
+    nerdfonts_fonts: '{{ terminal_fonts }}'
+
+- name: Cleanup
+  command: 'rm -rf /tmp/nerd*'

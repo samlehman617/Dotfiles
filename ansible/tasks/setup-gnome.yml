@@ -1,0 +1,12 @@
+# Determine which desktop environment we're working with
+- name: Stat xsession
+  register: xsession
+
+# Install Gnome Software
+- name: Install Gnome Software
+  become: true
+  package:
+    state: latest
+    name:
+      - gnome-software
+      - gnome-software-plugin-flatpak

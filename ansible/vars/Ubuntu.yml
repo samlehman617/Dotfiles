@@ -1,11 +1,19 @@
 utils: "{{ common }}"
+
 apt_repos:
   - "ppa:gnome-shell-extensions/ppa"
   # - "deb http://ppa.launchpad.net/gnome-shell-extensions/
   # - "deb http://download.opensuse.org/repositories/shells:/zsh-users:/zsh-completions/x{{ ansible_distribution }}_{{ ansible_distribution_version }} /"
+
 apt_keys:
   # - 'https://download.opensuse.org/repositories/shells:zsh-users:zsh-completions/x{{ ansible_distribution }}_{{ ansible_distribution_version }}/Release.key'
+
+apt_packages_cli:
+  - software-properties-common
+
+apt_packages_gui:
+  - synaptic
+
+# Directories
 bin_dir: "{{ ansible_env.HOME }}/.local/bin"
 font_dir: "{{ ansible_env.HOME }}/.local/share/fonts"
-# terminal_font: "Fira Code Retina Nerd Font Complete Mono"
-terminal_font: "Hack Nerd Font Complete Mono"

@@ -1,3 +1,9 @@
+# Ubuntu is a Debian-based distribution.
+# We will run our Debian configuration first.
+- include_tasks: 'Debian.yml'
+
+- include_vars: '../vars/Ubuntu.yml'
+
 - name: Add repos
   apt_repository: 
     repo: "{{ item }}" 

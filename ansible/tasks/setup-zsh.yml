@@ -1,6 +1,14 @@
 # +------------------------+
 # |       ZSH & ZINIT      |
 # +------------------------+
+- include_vars: '../vars/zsh.yml'
+
+- name: Install zsh dependencies
+  package:
+    name: '{{ zsh_deps }}'
+    state: 'latest'
+  become: true
+
 # Copy over files for ZSH & Zinit
 - name: Stat zinit
   stat:
@@ -19,7 +27,6 @@
   when: zsh.results[0].stat.exists == False
 
 # Create default .zshrc file if one is not provided
-# src='{{ home_dir }}/.oh-my-zsh/templates/zshrc.zsh-template'
 - name: Creating new ~/.zshrc
   copy:
     src='/etc/zsh/zshrc'

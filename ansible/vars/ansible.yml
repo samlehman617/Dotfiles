@@ -1,0 +1,3 @@
+ansible_community_roles:
+  - community.general
+  - drew-kun.nerdfonts

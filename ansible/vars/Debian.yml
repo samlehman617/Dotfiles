@@ -1,0 +1,5 @@
+debian_apt_packages_cli:
+  - wget
+
+debian_apt_packages_gui:
+  - synaptic 

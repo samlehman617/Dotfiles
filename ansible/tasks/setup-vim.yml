@@ -1,3 +1,17 @@
+- include_vars: '../vars/vim.yml'
+
+- name: Install Vim
+  package:
+    name: '{{ vim_deps}}'
+    state: latest
+  become: true
+
+- name: Install NeoVim
+  package:
+    name: '{{ neovim_deps }}'
+    state: latest
+  become: true
+
 - name: Stat Vim
   stat:
     path: "{{ item }}"
@@ -5,68 +19,3 @@
     - '{{ home_dir }}/.vim'
     - '{{ dotfiles_dir }}/home/.vimrc'
   register: vim
-- name: Clone oh-my-zsh
-  git:
-    repo=https://github.com/robbyrussell/oh-my-zsh
-    dest='{{ home_dir }}/.oh-my-zsh'
-  register: clone_omz
-  when: zsh.results[0].stat.exists == False
-- name: Creating new ~/.zshrc
-  copy:
-    src='{{ home_dir }}/.oh-my-zsh/templates/zshrc.zsh-template'
-    dest='{{ dotfiles_dir }}/home/.zshrc'
-  when: zsh.results[1].stat.exists == False
-- name: Stat powerline
-  stat:
-    path: "{{ font_dir | default('/usr/share/fonts') }}/FuraMono-Regular Powerline.otf"
-  register: powerline
-- name: Create temporary powerline directory
-  tempfile:
-    state: directory
-    prefix: "powerline."
-  register: temp
-  when: powerline.stat.exists == False
-- set_fact:
-    powerline_dir: "{{ temp.path }}"
-  when: powerline.stat.exists == False
-- name: Clone powerline fonts
-  git:
-    repo=https://github.com/powerline/fonts
-    dest='{{ powerline_dir }}/powerline'
-  register: clone_powerline
-  when: powerline.stat.exists == False
-- name: Install powerline fonts
-  command: '{{ powerline_dir }}/powerline/install.sh'
-  when: powerline.stat.exists == False and clone_powerline is defined and clone_powerline is succeeded
-- set_fact:
-    spaceship_dir: '{{ home_dir }}/.oh-my-zsh/custom/themes/spaceship-prompt'
-- name: Stat spaceship theme
-  stat:
-    path: '{{ spaceship_dir }}'
-  register: spaceship
-- name: Clone spaceship theme
-  git:
-    repo=https://github.com/denysdovhan/spaceship-prompt
-    dest='{{ spaceship_dir }}'
-  register: clone_spaceship
-  when: spaceship.stat.exists == False
-- name: Symlink spaceship theme
-  file:
-    src='{{ spaceship_dir }}/spaceship.zsh-theme'
-    dest='{{ home_dir }}/.oh-my-zsh/custom/themes/spaceship.zsh-theme'
-    state=link
-  when: clone_spaceship is defined and clone_spaceship is succeeded
-- name: Ensure theme contains ansible section
-  lineinfile:
-    path: '{{ spaceship_dir }}/spaceship.zsh'
-    line: '    ansible       # Ansible section'
-    state: present
-  check_mode: yes
-  register: has_ansible
-- name: Add ansible section to theme
-  lineinfile:
-    path: '{{ spaceship_dir }}/spaceship.zsh'
-    regexp: '^\sdocker'
-    insertafter: '^.*docker'
-    line: '    ansible       # Ansible section'
-  when: has_ansible.changed == True

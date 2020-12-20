@@ -1,0 +1,17 @@
+- include_vars: '../vars/ansible.yml'
+
+- name: Create ansible directory
+  file: path={{ modules_dir }} state=directory
+  become: true
+
+- name: Symlink ansible hosts
+  file:
+    src: '{{ playbook_dir }}/hosts'
+    dest: '/etc/ansible/hosts'
+    state: link
+    force: yes
+  become: true
+
+- name: Install ansible-galaxy roles
+  command: 'ansible-galaxy install {{ item }}'
+  with_items: '{{ ansible_community_roles }}'

@@ -1,0 +1,8 @@
+- name: Install flatpak
+  package:
+    name:
+      - flatpak
+      - flatpak-xdg-utils
+      - xdg-desktop-portal
+    state: latest
+  become: true
