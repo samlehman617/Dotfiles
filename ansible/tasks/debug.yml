@@ -1,0 +1,15 @@
+- name: Debug distro info
+  debug:
+    msg:
+      - "Distro: {{ ansible_distribution }} {{ ansible_distribution_release }} {{ ansible_distribution_version }}"
+      - "OS Family: {{ ansible_os_family }}"
+      - "Package Manager: {{ ansible_pkg_mgr }}"
+      - "Session Type: {{ lookup('env', 'XDG_SESSION_TYPE') }}"
+      - "Session Desktop: {{ lookup('env', 'XDG_SESSION_DESKTOP') }}"
+      - "has X11: {{ has_x11 }}"
+      - "has Wayland: {{ has_wayland }}"
+      - "X11 Desktops: {{ num_x_desktops }} {{ x11_desktops }}"
+      - "Wayland Desktops: {{ num_wayland_desktops }} {{ wayland_desktops }}"
+      - "has Gnome Shell: {{ has_gnome_shell }}"
+      - "has KDE Plasma: {{ has_plasma }}"
+      - "has Deepin: {{ has_deepin }}"
