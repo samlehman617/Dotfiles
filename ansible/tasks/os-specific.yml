@@ -2,6 +2,59 @@
     os_vars: "vars/{{ ansible_distribution }}.yml"
     os_tasks: "tasks/{{ ansible_distribution }}.yml"
 
+- name: Get wayland desktops
+  shell: basename -s -wayland.desktop -a $(find /usr/share/wayland-sessions -name *.desktop)
+  register: wayland_desktops_res
+
+- name: Get X11 desktops
+  shell: basename -s .desktop -a $(find /usr/share/xsessions -name *.desktop)
+  register: x11_desktops_res
+
+- set_fact:
+    x11_desktops: "{{ x11_desktops_res.stdout_lines }}"
+    wayland_desktops: "{{ wayland_desktops_res.stdout_lines }}"
+    num_x_desktops: "{{ x11_desktops_res.stdout_lines | length | int }}"
+    num_wayland_desktops: "{{ wayland_desktops_res.stdout_lines | length | int }}"
+    has_x11: 'false'
+    has_wayland: 'false'
+    has_gnome_shell: 'false'
+    has_plasma: 'false'
+    has_openbox: 'false'
+    has_xfce: 'false'
+    has_lxde: 'false'
+    has_unity: 'false'
+    has_deepin: 'false'
+    has_budgie: 'false'
+
+# Determine what desktop environments are installed.
+- set_fact:
+    has_wayland: 'true'
+  when: num_wayland_desktops | int > 0
+
+- set_fact:
+    has_x11: 'true'
+  when: num_x_desktops | int > 0
+
+- set_fact:
+    has_gnome_shell: 'true'
+  when: "'ubuntu' in x11_desktops or 'pop' in x11_desktops or 'gnome' in x11_desktops"
+  
+- set_fact:
+    has_gnome_shell: 'true'
+  when: "'ubuntu' in wayland_desktops or 'pop' in wayland_desktops or 'gnome' in wayland_desktops"
+
+- set_fact:
+    has_plasma: 'true'
+  when: "'plasma' in x11_desktops"
+
+- set_fact:
+    has_plasma: 'true'
+  when: "'plasma-wayland' in wayland_desktops"
+
+- set_fact:
+    has_deepin: 'true'
+  when: "'ubuntu*' in wayland_desktops"
+
 - name: Stat OS-specific vars and tasks
   stat:
     path: "{{ item }}"

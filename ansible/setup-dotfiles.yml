@@ -22,6 +22,8 @@
   - include_vars: "{{ os_vars }}"
     when: vars_exist
 
+  - include_tasks: 'tasks/debug.yml'
+
   - include_tasks: "tasks/setup-fonts.yml"
   - include_tasks: "tasks/setup-zsh.yml"
   - include_tasks: "tasks/setup-flatpak.yml"
