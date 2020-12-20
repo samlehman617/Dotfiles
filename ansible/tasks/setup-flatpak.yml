@@ -6,3 +6,12 @@
       - xdg-desktop-portal
     state: latest
   become: true
+
+- name: Install flatpak KDE compatibility packages
+  package:
+    name:
+      - xdg-desktop-portal-kde
+      - plasma-discover-backend-flatpak
+      - qt5-xdgdesktopportal-platformtheme
+    state: latest
+  when: has_plasma == 'true'
