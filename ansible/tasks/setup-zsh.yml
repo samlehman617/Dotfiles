@@ -1,14 +1,29 @@
 # +------------------------+
-# |       ZSH & ZINIT      |
+# | ZSH                    |
 # +------------------------+
-- include_vars: '../vars/zsh.yml'
-
-- name: Install zsh dependencies
+- name: Install ZSH deps
   package:
-    name: '{{ zsh_deps }}'
-    state: 'latest'
+    state: latest
+    name:
+      - autoconf
+      - subversion
   become: true
 
+- name: Install ZSH
+  package:
+    name: zsh
+    state: latest
+  become: true
+
+- name: Set ZSH as default shell
+  user:
+    shell: /usr/bin/zsh
+    name: "{{ ansible_env.USER }}"
+  become: true
+
+# +------------------------+
+# | Config                 |
+# +------------------------+
 # Copy over files for ZSH & Zinit
 - name: Stat zinit
   stat:
@@ -18,17 +33,30 @@
     - '{{ dotfiles_dir }}/home/.zshrc'
   register: zsh
 
-# Clone Zinit plugin manager for ZSH
-- name: Clone zinit
-  git:
-    repo=https://github.com/zdharma/zinit.git
-    dest='{{ home_dir }}/.zinit/bin'
-  register: clone_zinit
-  when: zsh.results[0].stat.exists == False
-
 # Create default .zshrc file if one is not provided
 - name: Creating new ~/.zshrc
   copy:
-    src='/etc/zsh/zshrc'
-    dest='{{ dotfiles_dir }}/home/.zshrc'
+    src: /etc/zsh/zshrc
+    dest: '{{ dotfiles_dir }}/home/.zshrc'
   when: zsh.results[1].stat.exists == False
+
+# +------------------------+
+# | Plugin Manager: zinit  |
+# +------------------------+
+- name: Install zinit deps
+  package:
+    state: latest
+    name:
+     - autoconf
+     - libncurses5-dev
+     - libncursesw5-dev
+     - subversion
+  become: true
+
+# Clone Zinit plugin manager for ZSH
+- name: Clone zinit
+  git:
+    repo: https://github.com/zdharma/zinit.git
+    dest: '{{ home_dir }}/.zinit/bin'
+  register: clone_zinit
+  when: zsh.results[0].stat.exists == False
