@@ -14,6 +14,9 @@
       - curl
       - wget
   tasks:
+  # +---------------------------------+
+  # | Ansible                         |
+  # +---------------------------------+
   # First, we setup Ansible with our community roles
   - include_tasks: 'tasks/setup-ansible.yml'
 
@@ -22,12 +25,17 @@
   - include_vars: "{{ os_vars }}"
     when: vars_exist
 
+  # +---------------------------------+
+  # | Debugging                       |
+  # +---------------------------------+
   - include_tasks: 'tasks/debug.yml'
 
-  - include_tasks: "tasks/setup-fonts.yml"
-  - include_tasks: "tasks/setup-zsh.yml"
-  - include_tasks: "tasks/setup-flatpak.yml"
-
+  # +---------------------------------+
+  # | Dotfiles                        |
+  # +---------------------------------+
+  # | TODO:                           |
+  # | - Move dotfiles to separate repo|
+  # +---------------------------------+
   # Symlink over our dotfile configs
   - name: Symlink config files
     file:
@@ -38,12 +46,26 @@
     with_community.general.filetree: '{{ dotfiles_dir }}/home/'
     when: item.state == 'file'
 
+  # +---------------------------------+
+  # | OS-independent                  |
+  # +---------------------------------+
   # Install the common packages
   - name: Install with {{ ansible_pkg_mgr }}
-    action: >
-      {{ ansible_pkg_mgr }} name="{{ utils }}" state=latest
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items: "{{ utils }}"
     become: "{{ false if ansible_pkg_mgr == 'homebrew' else true }}"
+    # action: >
+    #   {{ ansible_pkg_mgr }} name="{{ utils }}" state=latest
 
+  # Run setup for stuff running on all systems
+  - include_tasks: "tasks/setup-fonts.yml"
+  - include_tasks: "tasks/setup-zsh.yml"
+
+  # +---------------------------------+
+  # | OS-dependent                    |
+  # +---------------------------------+
   # Run our per-OS tasks
   - include_tasks: "{{ os_tasks }}"
     when: tasks_exist
