@@ -1,11 +1,23 @@
-- set_fact:
-    os_vars: "vars/{{ ansible_distribution }}.yml"
-    os_tasks: "tasks/{{ ansible_distribution }}.yml"
-
+# +---------------------------------------------+
+# | Desktop Environment                         |
+# +---------------------------------------------+
+# | - Determine if system has X11 and/or        |
+# |   Wayland                                   |
+# | - Determine which desktop environments are  |
+# |   installed                                 |
+# +---------------------------------------------+
+# | TODO:                                       |
+# | - Determine which system bar utilities are  |
+# |   installed                                 |
+# | - Determine which application docks are     |
+# |   installed                                 |
+# | - Determine which desktop widget utilities  |
+# |   are installed                             |
+# +---------------------------------------------+
+# Look for X11/Wayland sessions
 - name: Get wayland desktops
   shell: basename -s -wayland.desktop -a $(find /usr/share/wayland-sessions -name *.desktop)
   register: wayland_desktops_res
-
 - name: Get X11 desktops
   shell: basename -s .desktop -a $(find /usr/share/xsessions -name *.desktop)
   register: x11_desktops_res
@@ -26,34 +38,48 @@
     has_deepin: 'false'
     has_budgie: 'false'
 
-# Determine what desktop environments are installed.
+# Determine X11/Wayland presence from presence of 
+#   corresponding desktop session entries.
 - set_fact:
     has_wayland: 'true'
   when: num_wayland_desktops | int > 0
-
 - set_fact:
     has_x11: 'true'
   when: num_x_desktops | int > 0
 
+# Determine if specific desktop environments are installed
+#   from presence of corresponding desktop session entries.
+
+# GNOME-Shell
 - set_fact:
     has_gnome_shell: 'true'
   when: "'ubuntu' in x11_desktops or 'pop' in x11_desktops or 'gnome' in x11_desktops"
-  
 - set_fact:
     has_gnome_shell: 'true'
   when: "'ubuntu' in wayland_desktops or 'pop' in wayland_desktops or 'gnome' in wayland_desktops"
 
+# KDE Plasma
 - set_fact:
     has_plasma: 'true'
   when: "'plasma' in x11_desktops"
-
 - set_fact:
     has_plasma: 'true'
   when: "'plasma-wayland' in wayland_desktops"
 
+# Deepin Desktop
 - set_fact:
     has_deepin: 'true'
-  when: "'ubuntu*' in wayland_desktops"
+  when: "'deepin*' in x11_desktops"
+- set_fact:
+    has_deepin: 'true'
+  when: "'deepin*' in wayland_desktops"
+
+# +---------------------------------------------+
+# | Ansible distro-specific tasks/vars          |
+# +---------------------------------------------+
+- set_fact:
+    os_vars: "vars/{{ ansible_distribution }}.yml"
+    os_tasks: "tasks/{{ ansible_distribution }}.yml"
 
 - name: Stat OS-specific vars and tasks
   stat:
@@ -72,3 +98,4 @@
 - set_fact:
     vars_exist: "{{ os_files[os_vars] }}"
     tasks_exist: "{{ os_files[os_tasks] }}"
+
