@@ -1,5 +1,42 @@
-debian_apt_packages_cli:
+is_debian_based: true
+
+# +-------------------------------------------------------+
+# | Directories                                           |
+# +-------------------------------------------------------+
+bin_dir: '{{ ansible_env.HOME }}/.local/bin'
+font_dir: '{{ ansible_env.HOME }}/.local/share/fonts'
+
+# +-------------------------------------------------------+
+# | APT                                                   |
+# +-------------------------------------------------------+
+apt_repos:
+  - ppa:apt-fast/stable
+  - ppa:gnome-shell-extensions/ppa
+  - ppa:neovim-ppa/unstable
+  - deb https://packages.microsoft.com/repos/vscode
+
+apt_keys:
+  - https://packages.microsoft.com/keys/microsoft.asc
+
+apt_packages_base:
+  - build-essential
+  - software-properties-common
+  - ca-certificates
+  - gnupg2
+  - curl
+  - apt-transport-https
+  - autoconf
+
+apt_packages_cli:
   - wget
 
-debian_apt_packages_gui:
+apt_packages_gui:
   - synaptic 
+
+# +-------------------------------------------------------+
+# | Flatpak                                               |
+# +-------------------------------------------------------+
+flatpak_packages_gui:
+  - org.gnome.GTG
+  - org.gnome.Notes
+  - com.github.Eloston.UngoogledChromium
