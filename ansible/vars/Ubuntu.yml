@@ -1,5 +1,14 @@
 utils: "{{ common }}"
 
+# +-------------------------------------------------------+
+# | Directories                                           |
+# +-------------------------------------------------------+
+bin_dir: "{{ ansible_env.HOME }}/.local/bin"
+font_dir: "{{ ansible_env.HOME }}/.local/share/fonts"
+
+# +-------------------------------------------------------+
+# | APT                                                   |
+# +-------------------------------------------------------+
 apt_repos:
   - "ppa:gnome-shell-extensions/ppa"
   # - "deb http://ppa.launchpad.net/gnome-shell-extensions/
@@ -12,8 +21,6 @@ apt_packages_cli:
   - software-properties-common
 
 apt_packages_gui:
+  - gnome-tweaks
   - synaptic
 
-# Directories
-bin_dir: "{{ ansible_env.HOME }}/.local/bin"
-font_dir: "{{ ansible_env.HOME }}/.local/share/fonts"

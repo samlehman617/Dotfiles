@@ -1,9 +1,17 @@
-# Ubuntu is a Debian-based distribution.
-# We will run our Debian configuration first.
+# +-------------------------------------------------------+
+# | Ubuntu-based distros                                  |
+# +-------------------------------------------------------+
+# | - Ubuntu is a Debian-based distribution, so we run    |
+# |   our Debian setup tasks first                        |
+# | - Other Ubuntu-based distros should run these tasks   |
+# |   before continuing with their distro-specific tasks  |
+# +-------------------------------------------------------+
 - include_tasks: 'Debian.yml'
-
 - include_vars: '../vars/Ubuntu.yml'
 
+# +-----------------------------------+
+# | APT                               |
+# +-----------------------------------+
 - name: Add repos
   apt_repository: 
     repo: "{{ item }}" 
@@ -11,12 +19,12 @@
   with_items: "{{ apt_repos }}"
   become: true
 
-#- name: Add keys
-#  apt_key:
-#  url: "{{ item }}"
-#  state: present
-#with_items: "{{ apt_keys }}"
-#become: true
+# - name: Add keys
+#   apt_key:
+#     url: "{{ item }}"
+#     state: present
+#   with_items: "{{ apt_keys }}"
+#   become: true
 
 - name: Ensure apt is updated
   apt:
@@ -25,6 +33,9 @@
     cache_valid_time: 3600
   become: true
 
+# +-----------------------------------+
+# | GNOME-Software                    |
+# +-----------------------------------+
 - name: Install Gnome Software
   apt:
     name:
@@ -41,9 +52,12 @@
     state: absent
   when: ansible_distribution == "Ubuntu"
 
-- name: Set default shell to zsh
-  user:
-    shell: /usr/bin/zsh
-    name: "{{ ansible_env.USER }}"
-    # command: "chsh -s $(which zsh)"
-  become: true
+# +-----------------------------------+
+# | Shell                             |
+# +-----------------------------------+
+# - name: Set default shell to zsh
+#   user:
+#     shell: /usr/bin/zsh
+#     name: "{{ ansible_env.USER }}"
+#   become: true
+#   # command: "chsh -s $(which zsh)"
