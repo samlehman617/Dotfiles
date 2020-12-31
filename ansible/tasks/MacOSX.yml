@@ -1,11 +1,16 @@
+# +-----------------------------------+
+# | Homebrew                          |
+# +-----------------------------------+
 - name: Install homebrew
   command: '{{ dotfiles_dir }}/brew/install.sh'
   register: command_output
   changed_when: "'installed' not in command_output.stdout"
+
 - name: Ensure homebrew is updated
   homebrew:
     state: latest
     update_homebrew: yes
+
 - name: Install with homebrew cask
   homebrew_cask:
     name: "{{ item }}"
